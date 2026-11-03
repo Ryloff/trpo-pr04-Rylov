@@ -1,11 +1,10 @@
 <?php
+require_once __DIR__ . '/../src/functions.php'; 
+
 $appName = "Управление сотрудниками";
 $version = 1.0;                      
-$year = 2026;                         
-$menu = ['Сотрудники', 'Отчеты'];   
-
-$employees = []; 
-$file = __DIR__ . '/../data/employees.csv';
+$year = 2026;    
+$employees = loadEmployees(__DIR__ . '/../data/employees.csv');
 
 $fio = trim($_POST['fio'] ?? '');
 $email = trim($_POST['email'] ?? '');
@@ -34,16 +33,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $success = true;
+        $fio = $email = $department = $days = '';
     }
 }
-if (file_exists($file)) {
-    $handle = fopen($file, 'r');
-    $headers = fgetcsv($handle, 1000, ';', '"', '\\');
-    
-    while (($row = fgetcsv($handle, 1000, ';', '"', '\\')) !== false) {
-        $employees[] = $row;
+
+$filterDept = trim($_GET['dept'] ?? '');
+
+if ($filterDept !== '') {
+    $filteredEmployees = [];
+    foreach ($employees as $emp) {
+        if ($emp[2] === $filterDept) {
+            $filteredEmployees[] = $emp;
+        }
     }
-    fclose($handle);
+    $employees = $filteredEmployees;
 }
 ?>
 
@@ -98,14 +101,21 @@ if (file_exists($file)) {
         <br>
         <button type="submit">Отправить заявку</button>
     </form>
+    <p>Фильтр по отделу: 
+    <a href="?dept=">Все</a> | 
+    <a href="?dept=Разработка">Разработка</a> | 
+    <a href="?dept=Аналитика">Аналитика</a>
+    </p>
     <h1><?= $appName ?> (v<?= $version ?>)</h1>
     <p>Год: <?= $year ?></p>
     <table>
         <thead>
             <tr>
-                <?php foreach ($headers as $header): ?>
-                    <th><?= htmlspecialchars($header) ?></th>
-                <?php endforeach; ?>
+                <th>id</th>
+                <th>name</th>
+                <th>department</th>
+                <th>experience</th>
+                <th>email</th>
             </tr>
         </thead>
         <tbody>
