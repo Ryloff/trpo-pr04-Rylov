@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/../src/functions.php'; 
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $appName = "Управление сотрудниками";
 $version = 1.0;                      
 $year = 2026;    
@@ -9,7 +12,7 @@ $employees = loadEmployees(__DIR__ . '/../data/employees.csv');
 $fio = trim($_POST['fio'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $department = trim($_POST['department'] ?? '');
-$days = trim($_POST['days'] ?? '');
+$experience = trim($_POST['experience'] ?? '');
 
 $errors = []; 
 $success = false; 
@@ -27,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['department'] = 'Укажите отдел';
     }
     
-    if (!is_numeric($days) || $days < 1 || $days > 14) {
-        $errors['days'] = 'Количество дней должно быть от 1 до 14';
+    if (!is_numeric($experience) || $experience < 0 || $experience > 50) {
+        $errors['experience'] = 'Опыт работы должен быть числом от 0 до 50';
     }
 
     if (empty($errors)) {
@@ -63,7 +66,7 @@ if ($filterDept !== '') {
     </style>
 </head>
 <body>
-    <h2>Новая заявка на отпуск</h2>
+    <h2>Заявка на работу</h2>
 
     <?php if ($success): ?>
         <p>Заявка успешно отправлена!</p>
@@ -94,9 +97,9 @@ if ($filterDept !== '') {
         </div>
         <br>
         <div>
-            <label>Кол-во дней (1-14):</label><br>
-            <input type="number" name="days" value="<?= htmlspecialchars($days) ?>">
-            <span style="color:red;"><?= $errors['days'] ?? '' ?></span>
+            <label>Опыт работы (0-50):</label><br>
+            <input type="number" name="experience" value="<?= htmlspecialchars($days) ?>">
+            <span style="color:red;"><?= $errors['experience'] ?? '' ?></span>
         </div>
         <br>
         <button type="submit">Отправить заявку</button>
