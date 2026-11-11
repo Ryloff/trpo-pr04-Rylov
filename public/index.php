@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $success = true;
-        $fio = $email = $department = $days = '';
+        $fio = $email = $department = $experience = '';
     }
 }
 
@@ -98,7 +98,7 @@ if ($filterDept !== '') {
         <br>
         <div>
             <label>Опыт работы (0-50):</label><br>
-            <input type="number" name="experience" value="<?= htmlspecialchars($days) ?>">
+            <input type="number" name="experience" value="<?= htmlspecialchars($experience) ?>">
             <span style="color:red;"><?= $errors['experience'] ?? '' ?></span>
         </div>
         <br>
